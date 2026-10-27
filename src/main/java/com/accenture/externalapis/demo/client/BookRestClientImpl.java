@@ -1,14 +1,17 @@
 package com.accenture.externalapis.demo.client;
 
 import com.accenture.externalapis.demo.config.ExternalServiceProperties;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 // TODO: Make this class implement BookRestClient.
 @Component
 public class BookRestClientImpl {
+    //private static  final Logger=LoggerFactory.get
 
     private RestClient restClient;
+
 
     public BookRestClientImpl(RestClient.Builder builder, ExternalServiceProperties properties) {
         // TODO: Build the RestClient using builder.baseUrl(properties.baseUrl()).build()

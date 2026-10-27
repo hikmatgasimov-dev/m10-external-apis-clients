@@ -4,6 +4,7 @@ import com.accenture.externalapis.demo.client.BookRestClient;
 import com.accenture.externalapis.demo.client.BookWebClient;
 import com.accenture.externalapis.demo.dto.ComparisonResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -11,7 +12,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @RestController
-@RequestParam("/api/books/compare")
+@RequestMapping("/api/books/compare")
 public class BookComparisonController {
  private final BookRestClient bookRestClient;
  private  final BookWebClient bookWebClient;

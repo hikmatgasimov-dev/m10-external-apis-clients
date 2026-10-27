@@ -24,7 +24,7 @@ public class BookWebClientImpl  implements BookWebClient{
        throw new UnsupportedOperationException("WebClient is not implemented yet");
    }
     @Override
-    public Flux<BookDto> getAllBookAsync(){
+    public Flux<BookDto> getAllBooksAsync(){
         throw new UnsupportedOperationException("WebClient is not implemented yet");
     }
     @Override

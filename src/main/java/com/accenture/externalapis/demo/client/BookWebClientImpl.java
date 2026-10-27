@@ -33,13 +33,14 @@ public class BookWebClientImpl implements BookWebClient {
     @Override
     public Mono<BookDto> getBookAsync(Long id) {
         return webClient.get()
-                .uri(BOOKS_PATH + "/{id}" + id)
+                .uri(BOOKS_PATH + "/{id}", id)
                 .retrieve()
                 .bodyToMono(BookApiResponse.class)
                 .switchIfEmpty(Mono.error(new ClientException(
-                        "External service returned an empty response for book " + id))).
-                retryWhen(retryTransientErrors())
-                .map(this::toDto);
+                        "External service returned an empty response for book " + id)))
+                .retryWhen(retryTransientErrors())
+                .map(this::toDto)
+                .onErrorMap(error -> toClientException("fetch book " + id, error));
     }
     // True for 5xx answers, which can succeed on a second try (4xx and timeouts are not retried).
     private boolean isTransient(Throwable error) {
@@ -77,13 +78,20 @@ public class BookWebClientImpl implements BookWebClient {
     // Fetches all books as a Flux of BookDto.
     @Override
     public Flux<BookDto> getAllBooksAsync() {
-        throw new UnsupportedOperationException("WebClient is not implemented yet");
+        return webClient.get()
+                .uri(BOOKS_PATH)
+                .retrieve()
+                .bodyToFlux(BookApiResponse.class)
+                .retryWhen(retryTransientErrors())
+                .map(this::toDto)
+                .onErrorMap(error -> toClientException("fetch all books", error));
     }
 
     // Fetches two books at the same time with Mono.zip(); fails if either call fails.
     @Override
     public Mono<List<BookDto>> getBooksInParallel(Long id1, Long id2) {
-        throw new UnsupportedOperationException("WebClient is not implemented yet");
+        return Mono.zip(getBookAsync(id1), getBookAsync(id2))
+                .map(books -> List.of(books.getT1(), books.getT2()));
     }
     // Keeps only the fields BookDto needs from the raw external response.
     private BookDto toDto(BookApiResponse book) {
